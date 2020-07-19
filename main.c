@@ -7,6 +7,7 @@
 
 int myhead= -1, myneck = -1, direction= -1, myshield= -1; //头位置，脖子位置，方向，道具数。
 int row,line;
+int dangerFlag;
 //int score[4]={-1};
 //int *scoreList[40*30];
 struct option
@@ -34,7 +35,7 @@ int addaround(int posi,int *map)
     if(posi>=40)
     {
         int t=posi-40;
-        if(map[t]==-100)
+        if(map[t]==-100||map[t]==-10000)
             count=+1000;
         else if(map[t]<=-1&&map[t]>=-5)
             count+=map[t]*(-100);
@@ -42,7 +43,7 @@ int addaround(int posi,int *map)
     if(posi<40*29)
     {
         int t=posi+40;
-        if(map[t]==-100)
+        if(map[t]==-100||map[t]==-10000)
             count=+1000;
         else if(map[t]<=-1&&map[t]>=-5)
             count+=map[t]*(-100);
@@ -50,7 +51,7 @@ int addaround(int posi,int *map)
     if(posi%40==0)
     {
         int t=posi-1;
-        if(map[t]==-100)
+        if(map[t]==-100||map[t]==-10000)
             count=+1000;
         else if(map[t]<=-1&&map[t]>=-5)
             count+=map[t]*(-100);
@@ -58,7 +59,7 @@ int addaround(int posi,int *map)
     if(posi%40==39)
     {
         int t=posi+1;
-        if(map[t]==-100)
+        if(map[t]==-100||map[t]==-10000)
             count=+1000;
         else if(map[t]<=-1&&map[t]>=-5)
             count+=map[t]*(-100);
@@ -103,6 +104,40 @@ int oneDanger(int x)//判断单个格子的值是否安全
     return 1;
 
 }
+void expectDanger(int pos,int *map)//预判安全,检测其他蛇下一步的头,pos是将要到达的位置
+{
+    if(pos>=40)//上方有空
+    {
+        int temp=pos-40;
+        if(map[temp]>60000&&map[temp]<99999&&map[temp]%10==3)
+            dangerFlag=1;
+            //return 1;
+    }
+    if(pos<40*29)//下方有空
+    {
+        int temp=pos+40;
+        if(map[temp]>60000&&map[temp]<99999&&map[temp]%10==1)
+             dangerFlag=1;
+           // return 1;
+    }
+    if(pos%40!=0)//左方有空
+    {
+        int temp=pos-1;
+        if(map[temp]>60000&&map[temp]<99999&&map[temp]%10==2)
+             dangerFlag=1;
+            //return 1;
+    }
+    if(pos%40!=39)//右方有空
+    {
+        int temp=pos+1;
+        if(map[temp]>60000&&map[temp]<99999&&map[temp]%10==0)
+             dangerFlag=1;
+            //return 1;
+    }
+    //return 0;
+}
+
+
 
 int danger(int togo,int *map)
 {
@@ -114,6 +149,7 @@ int danger(int togo,int *map)
         }
         if(oneDanger(map[myhead-40])==1)
             return 1;
+
     }
     if(togo==3)//将要往下走
     {
@@ -123,7 +159,9 @@ int danger(int togo,int *map)
         }
         if(oneDanger(map[myhead+40])==1)
             return 1;
+
     }
+
     if(togo==0)//将要往左走
     {
         if(myhead%40==0||direction==2)
@@ -132,6 +170,7 @@ int danger(int togo,int *map)
         }
         if(oneDanger(map[myhead-1])==1)
             return 1;
+
     }
     if(togo==2)//将要往右走
     {
@@ -141,6 +180,7 @@ int danger(int togo,int *map)
         }
         if(oneDanger(map[myhead+1])==1)
             return 1;
+
     }
     return 0;
 }
@@ -156,7 +196,7 @@ void  calculate(int *map)
     if(myhead>=40)//上方的格子
     {
         int temp=myhead-40;
-        if(map[temp]==-100)
+        if(map[temp]==-100||map[temp]==-10000)
             myopt[1]._score+=10000;
         else if(map[temp]<=-1&&map[temp]>=-5)
             myopt[1]._score+=map[temp]*(-1000);
@@ -166,7 +206,7 @@ void  calculate(int *map)
     if(myhead<40*29)//下方的格子
     {
         int temp=myhead+40;
-        if(map[temp]==-100)
+        if(map[temp]==-100||map[temp]==-10000)
             myopt[3]._score+=10000;
         else if(map[temp]<=-1&&map[temp]>=-5)
             myopt[3]._score+=map[temp]*(-1000);
@@ -175,7 +215,7 @@ void  calculate(int *map)
     if(myhead%40!=0)//左边的格子
     {
         int temp=myhead-1;
-        if(map[temp]==-100)
+        if(map[temp]==-100||map[temp]==-10000)
             myopt[0]._score+=10000;
         else if(map[temp]<=-1&&map[temp]>=-5)
             myopt[0]._score+=map[temp]*(-1000);
@@ -184,7 +224,7 @@ void  calculate(int *map)
     if(myhead%40!=39)//右边的格子
     {
         int temp=myhead+1;
-        if(map[temp]==-100)
+        if(map[temp]==-100||map[temp]==-10000)
             myopt[2]._score+=10000;
         else if(map[temp]<=-1&&map[temp]>=-5)
             myopt[2]._score+=map[temp]*(-1000);
@@ -202,7 +242,7 @@ void  calculate(int *map)
                    count ++;
             }
         }
-        myopt[3]._score+=count;
+        myopt[3]._score+=count/4;
     }
 
     if(myhead>40*4)//看下
@@ -214,7 +254,7 @@ void  calculate(int *map)
                 if(eatable(map[i*40+j])==1)
                     count++;
             }
-        myopt[1]._score+=count;
+        myopt[1]._score+=count/4;
     }
     if(myhead%40>4)//看左
     {
@@ -227,7 +267,7 @@ void  calculate(int *map)
                     count++;
             }
         }
-         myopt[0]._score+=count;
+         myopt[0]._score+=count/4;
     }
     if(myhead%40<35)//看右边
     {
@@ -240,7 +280,7 @@ void  calculate(int *map)
                     count++;
             }
         }
-         myopt[2]._score+=count;
+         myopt[2]._score+=count/4;
     }
 
 }
@@ -262,6 +302,8 @@ int judge(int * map)//读入当前地图之后输出一个方向
     row=(myhead-line)/40;
     myshield = shieldNums(map[myneck]); //根据脖子的数值获得道具数量
     //if(myshield >=1){return 4;}//如果拥有的道具超过两个，直接放道具。
+
+    dangerFlag=0;
 
 
     calculate(map);//算分,保存到score数组中
