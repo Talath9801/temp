@@ -205,7 +205,7 @@ void  calculate(int *map)
         myopt[3]._score+=count;
     }
 
-    if(myhead>40*4)
+    if(myhead>40*4)//看下
     {
         int count=0;
         for(int i=0;i<row;i++)
@@ -215,6 +215,32 @@ void  calculate(int *map)
                     count++;
             }
         myopt[1]._score+=count;
+    }
+    if(myhead%40>4)//看左
+    {
+        int count=0;
+        for(int i=row/2;i<(row+29)/2;i++)
+        {
+            for(int j=0;j<line;j++)
+            {
+                if(eatable(map[i*40+j])==1)
+                    count++;
+            }
+        }
+         myopt[0]._score+=count;
+    }
+    if(myhead%40<35)//看右边
+    {
+        int count=0;
+        for(int i=row/2;i<(row+29)/2;i++)
+        {
+            for(int j=line;j<39;j++)
+            {
+                if(eatable(map[i*40+j])==1)
+                    count++;
+            }
+        }
+         myopt[2]._score+=count;
     }
 
 }
