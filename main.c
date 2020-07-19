@@ -21,6 +21,12 @@ int valid(int pos)
         return 1;
     else return 0;
 }
+int eatable(int x)
+{
+    if((x>=-200&&x<0)||x==-100||x==-10000)
+        return 1;
+    else return 0;
+}
 
 int addaround(int posi,int *map)
 {
@@ -184,6 +190,33 @@ void  calculate(int *map)
             myopt[2]._score+=map[temp]*(-1000);
         myopt[2]._score+=addaround(temp,map);
     }
+    //看下面
+    if(myhead<40*26)
+    {
+        int count=0;
+        for(int i=row+1;i<=29;i++)
+        {
+            for(int j=line/2;j<=(line+39)/2;j++)
+            {
+                if(eatable(map[i*40+j])==1)
+                   count ++;
+            }
+        }
+        myopt[3]._score+=count;
+    }
+
+    if(myhead>40*4)
+    {
+        int count=0;
+        for(int i=0;i<row;i++)
+            for(int j=line/2;j<=(line+39)/2;j++)
+            {
+                if(eatable(map[i*40+j])==1)
+                    count++;
+            }
+        myopt[1]._score+=count;
+    }
+
 }
 
 int judge(int * map)//读入当前地图之后输出一个方向
@@ -230,6 +263,11 @@ int judge(int * map)//读入当前地图之后输出一个方向
         if(danger(myopt[i]._direc,map)==0)
             return myopt[i]._direc;
     }
+    for(int i=0;i<4;i++)
+        {
+            if(danger(i,map)==0)
+                return i;
+        }
 
 
     //还未考虑用盾牌的情况
