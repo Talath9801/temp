@@ -48,7 +48,7 @@ int addaround(int posi,int *map)
         else if(map[t]<=-1&&map[t]>=-5)
             count+=map[t]*(-100);
     }
-    if(posi%40==0)
+    if(posi%40!=0)
     {
         int t=posi-1;
         if(map[t]==-100||map[t]==-10000)
@@ -56,7 +56,7 @@ int addaround(int posi,int *map)
         else if(map[t]<=-1&&map[t]>=-5)
             count+=map[t]*(-100);
     }
-    if(posi%40==39)
+    if(posi%40!=39)
     {
         int t=posi+1;
         if(map[t]==-100||map[t]==-10000)
@@ -104,39 +104,34 @@ int oneDanger(int x)//判断单个格子的值是否安全
     return 1;
 
 }
-void expectDanger(int pos,int *map)//预判安全,检测其他蛇下一步的头,pos是将要到达的位置
+int  expectDanger(int pos,int *map)//预判安全,检测其他蛇下一步的头,pos是将要到达的位置
 {
     if(pos>=40)//上方有空
     {
         int temp=pos-40;
         if(map[temp]>60000&&map[temp]<99999&&map[temp]%10==3)
-            dangerFlag=1;
-            //return 1;
+            return 1;
     }
     if(pos<40*29)//下方有空
     {
         int temp=pos+40;
         if(map[temp]>60000&&map[temp]<99999&&map[temp]%10==1)
-             dangerFlag=1;
-           // return 1;
+             return 1;
     }
     if(pos%40!=0)//左方有空
     {
         int temp=pos-1;
         if(map[temp]>60000&&map[temp]<99999&&map[temp]%10==2)
-             dangerFlag=1;
-            //return 1;
+             return 1;
     }
     if(pos%40!=39)//右方有空
     {
         int temp=pos+1;
         if(map[temp]>60000&&map[temp]<99999&&map[temp]%10==0)
-             dangerFlag=1;
-            //return 1;
+             return 1;
     }
-    //return 0;
+    return 0;
 }
-
 
 
 int danger(int togo,int *map)
@@ -171,6 +166,7 @@ int danger(int togo,int *map)
         if(oneDanger(map[myhead-1])==1)
             return 1;
 
+
     }
     if(togo==2)//将要往右走
     {
@@ -180,6 +176,7 @@ int danger(int togo,int *map)
         }
         if(oneDanger(map[myhead+1])==1)
             return 1;
+
 
     }
     return 0;
@@ -234,7 +231,7 @@ void  calculate(int *map)
     if(myhead<40*26)
     {
         int count=0;
-        for(int i=row+1;i<=29;i++)
+        for(int i=row+1;i<=(29+row+1)/2;i++)
         {
             for(int j=line/2;j<=(line+39)/2;j++)
             {
@@ -248,7 +245,7 @@ void  calculate(int *map)
     if(myhead>40*4)//看下
     {
         int count=0;
-        for(int i=0;i<row;i++)
+        for(int i=row/2;i<=row;i++)
             for(int j=line/2;j<=(line+39)/2;j++)
             {
                 if(eatable(map[i*40+j])==1)
@@ -261,7 +258,7 @@ void  calculate(int *map)
         int count=0;
         for(int i=row/2;i<(row+29)/2;i++)
         {
-            for(int j=0;j<line;j++)
+            for(int j=line/2;j<=line;j++)
             {
                 if(eatable(map[i*40+j])==1)
                     count++;
@@ -274,7 +271,7 @@ void  calculate(int *map)
         int count=0;
         for(int i=row/2;i<(row+29)/2;i++)
         {
-            for(int j=line;j<39;j++)
+            for(int j=line;j<(39+line)/2;j++)
             {
                 if(eatable(map[i*40+j])==1)
                     count++;
@@ -331,15 +328,9 @@ int judge(int * map)//读入当前地图之后输出一个方向
         if(danger(myopt[i]._direc,map)==0)
             return myopt[i]._direc;
     }
-    for(int i=0;i<4;i++)
-        {
-            if(danger(i,map)==0)
-                return i;
-        }
-
 
     //还未考虑用盾牌的情况
-    return 4; //哪个方向都不能走，那就随便走一个0吧，来世再见。
+    return 4; //哪个方向都不能走
 }
 
 int main()
