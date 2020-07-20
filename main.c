@@ -90,7 +90,14 @@ int shieldNums(int value)//shield
     if(value >=  192023110 && value <=  192023199){return 9;} //偷懒了，超过9一律按9处理
     return 0;
 }
-
+int otherhead(int value)
+{
+    if(value>=60000&&value<99999)
+        return 1;
+    if(value>=-990000&&value<=-600000)
+        return 1;
+    return 0;
+}
 int oneDanger(int x)//判断单个格子的值是否安全
 {
     if(x==0)
@@ -109,25 +116,25 @@ int  expectDanger(int pos,int *map)//预判安全,检测其他蛇下一步的头
     if(pos>=40)//上方有空
     {
         int temp=pos-40;
-        if(map[temp]>60000&&map[temp]<99999&&map[temp]%10==3)
+        if(otherhead(map[temp])==1&&map[temp]%10==3)
             return 1;
     }
     if(pos<40*29)//下方有空
     {
         int temp=pos+40;
-        if(map[temp]>60000&&map[temp]<99999&&map[temp]%10==1)
+        if(otherhead(map[temp])==1&&map[temp]%10==1)
              return 1;
     }
     if(pos%40!=0)//左方有空
     {
         int temp=pos-1;
-        if(map[temp]>60000&&map[temp]<99999&&map[temp]%10==2)
+        if(otherhead(map[temp])==1&&map[temp]%10==2)
              return 1;
     }
     if(pos%40!=39)//右方有空
     {
         int temp=pos+1;
-        if(map[temp]>60000&&map[temp]<99999&&map[temp]%10==0)
+        if(otherhead(map[temp])==1&&map[temp]%10==0)
              return 1;
     }
     return 0;
