@@ -144,6 +144,8 @@ int danger(int togo,int *map)
         }
         if(oneDanger(map[myhead-40])==1)
             return 1;
+        if(expectDanger(myhead-40,map)==1)
+            return 1;
 
     }
     if(togo==3)//将要往下走
@@ -155,6 +157,8 @@ int danger(int togo,int *map)
         if(oneDanger(map[myhead+40])==1)
             return 1;
 
+        if(expectDanger(myhead+40,map)==1)
+            return 1;
     }
 
     if(togo==0)//将要往左走
@@ -165,7 +169,8 @@ int danger(int togo,int *map)
         }
         if(oneDanger(map[myhead-1])==1)
             return 1;
-
+        if(expectDanger(myhead-1,map)==1)
+            return 1;
 
     }
     if(togo==2)//将要往右走
@@ -176,7 +181,8 @@ int danger(int togo,int *map)
         }
         if(oneDanger(map[myhead+1])==1)
             return 1;
-
+        if(expectDanger(myhead+1,map)==1)
+            return 1;
 
     }
     return 0;
